@@ -1,0 +1,595 @@
+/* ============================================================
+   Homepage Modules 2.0 — "Calm Control Center" 设计系统
+   全部颜色走 Obsidian CSS 变量，自适应任意主题；强调色统一驱动。
+   ============================================================ */
+
+.hm-card,
+.hm-grid,
+.hm-panel,
+.hm-pomo-view {
+  --hm-radius: 14px;
+  --hm-radius-sm: 9px;
+  --hm-gap: 12px;
+  --hm-accent: var(--interactive-accent);
+  --hm-accent-soft: color-mix(in srgb, var(--interactive-accent) 14%, transparent);
+  --hm-accent-line: color-mix(in srgb, var(--interactive-accent) 42%, var(--background-modifier-border));
+  --hm-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ---------- 入场动画 ---------- */
+@keyframes hm-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hm-pop {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- 卡片 ---------- */
+.hm-card {
+  position: relative;
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--hm-radius);
+  padding: 16px 18px;
+  margin: 8px 0;
+  box-shadow: var(--shadow-s);
+}
+.hm-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.hm-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--hm-accent-soft);
+  color: var(--hm-accent);
+}
+.hm-card-icon svg { width: 17px; height: 17px; }
+.hm-card-title {
+  font-weight: 650;
+  font-size: 1.02em;
+  letter-spacing: -0.01em;
+  color: var(--text-normal);
+}
+.hm-card-body { color: var(--text-normal); }
+.hm-muted {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+/* 卡片内的数字统一等宽 */
+.hm-card,
+.hm-grid-cell { font-feature-settings: "tnum"; }
+
+/* 按钮微交互（仅作用于本插件容器内） */
+.hm-card button,
+.hm-grid-content button,
+.hm-panel button,
+.hm-pomo-view button {
+  border-radius: 8px;
+  transition: transform 0.1s var(--hm-ease), background 0.15s, box-shadow 0.15s;
+}
+.hm-card button:active,
+.hm-grid-content button:active,
+.hm-panel button:active,
+.hm-pomo-view button:active {
+  transform: scale(0.96);
+}
+
+/* 锁定 / 信息卡 */
+.hm-card-lock { border-style: dashed; border-color: var(--hm-accent-line); }
+.hm-card-lock .hm-card-icon,
+.hm-card-info .hm-card-icon { background: var(--background-modifier-border); }
+.hm-lock-title { font-weight: 650; margin-bottom: 4px; }
+.hm-lock-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+/* ---------- 时钟 ---------- */
+.hm-clock-time {
+  font-size: 2.4em;
+  font-weight: 720;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--text-normal);
+}
+.hm-clock-date { margin-top: 2px; }
+
+/* ---------- 主页网格 ---------- */
+.hm-homepage {
+  --hm-zoom: 1;
+  transform: scale(var(--hm-zoom));
+  transform-origin: top left;
+}
+.hm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(264px, 1fr));
+  gap: var(--hm-gap);
+  align-items: start;
+}
+.hm-grid-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--hm-radius);
+  overflow: hidden;
+  background: var(--background-primary);
+  box-shadow: var(--shadow-s);
+  transition: box-shadow 0.2s var(--hm-ease), transform 0.2s var(--hm-ease),
+    border-color 0.2s var(--hm-ease);
+  animation: hm-rise 0.5s both var(--hm-ease);
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+.hm-grid-cell:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-l);
+  border-color: var(--hm-accent-line);
+}
+.hm-grid-cell.hm-dragging {
+  opacity: 0.55;
+  box-shadow: var(--shadow-l);
+  outline: 2px dashed var(--hm-accent);
+}
+.hm-grid-cell.hm-resizing { outline: 2px solid var(--hm-accent); }
+.hm-grid-handle {
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  padding: 7px 12px;
+  font-size: var(--font-ui-smaller);
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--background-secondary) 70%, transparent);
+  border-bottom: 1px solid var(--background-modifier-border);
+  user-select: none;
+  touch-action: none;
+}
+.hm-grid-handle::before {
+  content: "⠿";
+  margin-right: 8px;
+  opacity: 0.5;
+  letter-spacing: -2px;
+}
+.hm-grid-content { padding: 10px; overflow: auto; height: 100%; }
+/* 卡片在网格内时去掉重复边框/阴影，由格子提供外框 */
+.hm-grid-content .hm-card {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  margin: 0;
+  padding: 6px 6px 2px;
+}
+.hm-grid-resize {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 15px;
+  height: 15px;
+  cursor: nwse-resize;
+  opacity: 0;
+  transition: opacity 0.15s;
+  background: radial-gradient(circle at 70% 70%, var(--text-muted) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 70% 40%, var(--text-muted) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 40% 70%, var(--text-muted) 0 1.5px, transparent 2px);
+  touch-action: none;
+}
+.hm-grid-cell:hover .hm-grid-resize { opacity: 0.6; }
+@media (max-width: 640px) {
+  .hm-grid { grid-template-columns: 1fr; }
+}
+
+.hm-zoom-bar { display: flex; gap: 6px; justify-content: flex-end; margin-bottom: 6px; }
+.hm-zoom-btn { width: 34px; }
+
+/* ---------- 热力图 ---------- */
+.hm-heatmap { overflow-x: auto; padding: 2px 0; }
+.hm-heatmap-label { fill: var(--text-faint); font-size: 9px; }
+.hm-heatmap-cell {
+  stroke: var(--background-primary);
+  stroke-width: 1.5;
+  transition: transform 0.1s;
+  transform-origin: center;
+}
+.hm-heatmap-cell:hover { stroke: var(--text-normal); }
+.hm-heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: flex-end;
+  margin-top: 6px;
+  font-size: var(--font-ui-smaller);
+  color: var(--text-faint);
+}
+.hm-legend-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  background: var(--background-modifier-border);
+}
+
+/* ---------- 番茄钟（环形进度盘）---------- */
+.hm-pomo-ring-wrap {
+  position: relative;
+  width: 168px;
+  height: 168px;
+  margin: 4px auto 10px;
+}
+.hm-pomo-ring { transform: rotate(-90deg); }
+.hm-pomo-ring-track {
+  fill: none;
+  stroke: var(--background-modifier-border);
+  stroke-width: 10;
+}
+.hm-pomo-ring-prog {
+  fill: none;
+  stroke: var(--hm-accent);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s linear, stroke 0.3s;
+}
+.hm-pomo-ring-wrap.hm-pomo-break .hm-pomo-ring-prog {
+  stroke: var(--color-green, var(--text-accent));
+}
+.hm-pomo-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.hm-pomo-time {
+  font-size: 2.2em;
+  font-weight: 720;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--text-normal);
+}
+.hm-pomo-mode { font-size: var(--font-ui-smaller); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.hm-pomo-tally { text-align: center; color: var(--text-muted); font-size: var(--font-ui-small); margin-bottom: 8px; }
+.hm-pomo-tally b { color: var(--text-normal); }
+.hm-pomo-controls { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.hm-pomo-status { cursor: pointer; }
+.hm-pomo-view {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100%; gap: 8px;
+}
+.hm-pomo-view .hm-pomo-ring-wrap { width: 240px; height: 240px; }
+.hm-pomo-view .hm-pomo-time { font-size: 3em; }
+
+/* ---------- 习惯 ---------- */
+.hm-habit-toolbar { margin-bottom: 12px; }
+.hm-habit-list { display: flex; flex-direction: column; gap: 16px; }
+.hm-habit-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.hm-habit-info { display: flex; align-items: center; gap: 8px; }
+.hm-habit-name { font-weight: 600; }
+.hm-habit-ctrl { display: flex; align-items: center; gap: 6px; }
+.hm-habit-count { min-width: 70px; text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; }
+.hm-habit-count.hm-ok { color: var(--color-green, var(--text-success)); }
+.hm-habit-count.hm-over { color: var(--color-red, var(--text-error)); }
+
+/* 通用 badge / icon 按钮 */
+.hm-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--hm-accent-soft);
+  color: var(--hm-accent);
+  letter-spacing: 0.02em;
+}
+.hm-icon-btn {
+  background: transparent;
+  box-shadow: none;
+  padding: 3px 7px;
+  color: var(--text-muted);
+}
+.hm-icon-btn:hover { color: var(--text-normal); background: var(--background-modifier-hover); }
+.hm-icon-btn.hm-active { color: var(--hm-accent); }
+
+/* ---------- 待办看板 ---------- */
+.hm-todo-toolbar { margin-bottom: 10px; }
+.hm-todo-board { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+.hm-todo-col {
+  min-width: 230px; flex: 0 0 auto;
+  background: color-mix(in srgb, var(--background-secondary) 60%, transparent);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--hm-radius-sm); padding: 10px;
+}
+.hm-todo-col-head { display: flex; justify-content: space-between; align-items: center; font-weight: 650; margin-bottom: 8px; }
+.hm-todo-tasks { display: flex; flex-direction: column; gap: 7px; }
+.hm-todo-task {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--hm-radius-sm); padding: 8px 10px;
+  background: var(--background-primary);
+  box-shadow: var(--shadow-s);
+  transition: transform 0.12s var(--hm-ease), box-shadow 0.12s;
+  animation: hm-pop 0.25s both;
+}
+.hm-todo-task:hover { transform: translateY(-1px); box-shadow: var(--shadow-l); }
+.hm-todo-task.hm-done { opacity: 0.62; }
+.hm-todo-task.hm-done .hm-todo-task-title { text-decoration: line-through; color: var(--text-muted); }
+.hm-todo-task-top { display: flex; align-items: center; gap: 8px; }
+.hm-todo-task-title { flex: 1; }
+.hm-todo-task-actions { display: flex; gap: 2px; }
+.hm-todo-subs { margin-top: 8px; padding-left: 10px; border-left: 2px solid var(--hm-accent-soft); }
+.hm-todo-sub { display: flex; align-items: center; gap: 6px; font-size: var(--font-ui-small); padding: 2px 0; }
+.hm-todo-sub.hm-done span { text-decoration: line-through; color: var(--text-muted); }
+.hm-todo-add {
+  margin-top: 8px; width: 100%;
+  background: transparent;
+  border: 1px dashed var(--background-modifier-border);
+  color: var(--text-muted);
+}
+.hm-todo-add:hover { border-color: var(--hm-accent-line); color: var(--text-normal); }
+
+/* ---------- 今日清单 ---------- */
+.hm-today-list { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; }
+.hm-today-row { display: flex; align-items: center; gap: 8px; padding: 5px 6px; border-radius: 7px; transition: background 0.12s; }
+.hm-today-row:hover { background: var(--background-modifier-hover); }
+.hm-today-row.hm-done .hm-today-title { text-decoration: line-through; color: var(--text-muted); }
+.hm-today-title { flex: 1; }
+
+/* ---------- 背单词 ---------- */
+.hm-vocab-stat { margin-bottom: 10px; }
+.hm-vocab-card {
+  text-align: center; padding: 22px 14px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--hm-radius); margin: 10px 0;
+  background: color-mix(in srgb, var(--background-secondary) 50%, transparent);
+  animation: hm-pop 0.3s both;
+}
+.hm-vocab-word { font-size: 2em; font-weight: 720; letter-spacing: -0.01em; }
+.hm-vocab-reading { margin-top: 2px; }
+.hm-vocab-meaning { font-size: 1.15em; margin: 14px 0; color: var(--text-normal); }
+.hm-vocab-rate { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.hm-vocab-rate button { min-width: 60px; }
+.hm-rate-again { color: var(--color-red, var(--text-error)); }
+.hm-rate-good { color: var(--color-green, var(--text-success)); }
+.hm-vocab-done { text-align: center; padding: 20px; font-size: 1.15em; }
+.hm-vocab-actions { margin-top: 10px; }
+.hm-vocab-levels { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.hm-vocab-level-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.hm-vocab-level-name { font-weight: 600; }
+.hm-vocab-level .hm-bar { margin: 0; }
+.hm-vocab-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.hm-pill {
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: var(--font-ui-small);
+  border: 1px solid var(--background-modifier-border);
+  background: transparent;
+  color: var(--text-muted);
+  box-shadow: none;
+  transition: all 0.12s var(--hm-ease, ease);
+}
+.hm-pill:hover { border-color: var(--hm-accent); color: var(--text-normal); }
+.hm-pill.hm-active { background: var(--hm-accent); color: var(--text-on-accent); border-color: transparent; }
+
+/* ---------- AI ---------- */
+.hm-aichat-list { display: flex; flex-direction: column; gap: 8px; max-height: 340px; overflow-y: auto; padding: 4px; }
+.hm-aichat-msg { padding: 9px 12px; border-radius: 14px; white-space: pre-wrap; max-width: 86%; line-height: 1.5; animation: hm-pop 0.2s both; }
+.hm-aichat-msg.hm-user { align-self: flex-end; background: var(--hm-accent); color: var(--text-on-accent); border-bottom-right-radius: 4px; }
+.hm-aichat-msg.hm-assistant { align-self: flex-start; background: var(--background-secondary); color: var(--text-normal); border-bottom-left-radius: 4px; }
+.hm-aichat-input { display: flex; gap: 6px; margin-top: 10px; }
+.hm-aichat-input textarea { flex: 1; resize: vertical; border-radius: 10px; }
+.hm-aisum-out, .hm-aibrief-out { margin-top: 10px; white-space: pre-wrap; color: var(--text-normal); line-height: 1.55; }
+.hm-capture textarea { width: 100%; border-radius: 10px; }
+
+/* ---------- 通用条形 ---------- */
+.hm-bar { flex: 1; height: 8px; background: var(--background-modifier-border); border-radius: 999px; overflow: hidden; margin: 0 8px; }
+.hm-bar-fill { height: 100%; background: var(--hm-accent); border-radius: 999px; transition: width 0.4s var(--hm-ease); }
+.hm-bar-fill.hm-over { background: var(--color-red, var(--text-error)); }
+
+/* ---------- 统计网格 ---------- */
+.hm-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 8px; }
+.hm-stat-cell {
+  text-align: center; padding: 12px 10px;
+  border: 1px solid var(--background-modifier-border); border-radius: var(--hm-radius-sm);
+  background: color-mix(in srgb, var(--background-secondary) 50%, transparent);
+}
+.hm-stat-value { font-size: 1.7em; font-weight: 720; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.hm-stat-label { margin-top: 2px; }
+
+/* ---------- 快捷链接 ---------- */
+.hm-links-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.hm-link {
+  display: flex; align-items: center; justify-content: center; min-height: 46px; padding: 10px;
+  border: 1px solid var(--background-modifier-border); border-radius: var(--hm-radius-sm);
+  text-align: center; text-decoration: none; color: var(--text-normal); cursor: pointer;
+  transition: transform 0.12s var(--hm-ease), border-color 0.12s, background 0.12s;
+}
+.hm-link:hover { transform: translateY(-2px); border-color: var(--hm-accent-line); background: var(--hm-accent-soft); }
+.hm-link-add { border-style: dashed; background: transparent; color: var(--text-muted); font-size: 1.3em; }
+
+/* ---------- 倒计时 / 订阅 / 读书 ---------- */
+.hm-cd-list { display: flex; flex-direction: column; gap: 2px; }
+.hm-cd-row, .hm-subs-row, .hm-reading-head { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+.hm-cd-name { flex: 1; }
+.hm-cd-days { font-weight: 600; font-variant-numeric: tabular-nums; }
+.hm-subs-row span:first-child { flex: 1; }
+
+/* ---------- 随机 / 喝水 / 心情 ---------- */
+.hm-random-result { text-align: center; font-size: 2.2em; font-weight: 720; min-height: 1.2em; }
+.hm-random-actions, .hm-water-row { display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 10px; }
+.hm-water-count { font-size: 1.3em; font-weight: 650; font-variant-numeric: tabular-nums; }
+.hm-mood-picker { display: flex; gap: 8px; justify-content: center; }
+.hm-mood-face { font-size: 1.7em; background: transparent; border: 1px solid transparent; border-radius: 10px; transition: transform 0.12s var(--hm-ease); }
+.hm-mood-face:hover { transform: scale(1.15); }
+.hm-mood-face.hm-active { border-color: var(--hm-accent); background: var(--hm-accent-soft); }
+
+/* ---------- 财务 ---------- */
+.hm-ledger-total { font-size: 1.4em; font-weight: 720; letter-spacing: -0.02em; margin-bottom: 12px; }
+.hm-ledger-cat, .hm-budget-row, .hm-goal-head { display: flex; align-items: center; gap: 6px; }
+.hm-ledger-cat { padding: 3px 0; }
+.hm-goal-row, .hm-reading-row { margin: 12px 0; }
+.hm-goal-ctrl { display: flex; gap: 4px; margin-top: 6px; }
+
+/* ---------- 日历 ---------- */
+.hm-cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.hm-cal-title { font-weight: 650; }
+.hm-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.hm-cal-wd { text-align: center; font-size: var(--font-ui-smaller); color: var(--text-faint); padding-bottom: 2px; }
+.hm-cal-cell {
+  position: relative; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; cursor: pointer; font-size: var(--font-ui-small);
+  transition: background 0.12s;
+}
+.hm-cal-cell:hover { background: var(--background-modifier-hover); }
+.hm-cal-cell.hm-empty { cursor: default; }
+.hm-cal-today { background: var(--hm-accent); color: var(--text-on-accent); font-weight: 700; }
+.hm-cal-dot { position: absolute; bottom: 3px; width: 4px; height: 4px; border-radius: 50%; background: var(--hm-accent); }
+.hm-cal-today .hm-cal-dot { background: var(--text-on-accent); }
+
+/* ---------- 时间块 / 天气 ---------- */
+.hm-tb-row { display: flex; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--background-modifier-border); }
+.hm-tb-time { font-variant-numeric: tabular-nums; color: var(--text-muted); min-width: 100px; font-weight: 600; }
+.hm-tb-label { flex: 1; }
+.hm-weather-now { font-size: 1.7em; font-weight: 700; }
+.hm-weather-days { display: flex; gap: 14px; margin-top: 8px; }
+.hm-weather-day { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+
+/* ---------- 侧边面板 ---------- */
+.hm-panel { padding: 16px 18px; }
+.hm-panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.hm-panel-head h2 { margin: 0; letter-spacing: -0.02em; }
+.hm-panel-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+.hm-module-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.hm-module-row {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px;
+  padding: 9px 12px; border: 1px solid var(--background-modifier-border); border-radius: var(--hm-radius-sm);
+  transition: border-color 0.12s, background 0.12s;
+}
+.hm-module-row:hover { border-color: var(--hm-accent-line); background: var(--hm-accent-soft); }
+.hm-module-meta { display: flex; align-items: center; gap: 6px; }
+.hm-module-name { font-weight: 600; }
+.hm-module-desc { grid-column: 1 / -1; }
+.hm-module-actions { display: flex; gap: 6px; align-items: center; }
+.hm-module-actions .hm-active { color: var(--hm-accent); font-weight: 600; }
+
+/* ---------- 待办：优先级 + 截止 ---------- */
+.hm-pri-dot {
+  width: 12px;
+  height: 12px;
+  min-width: 12px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-faint);
+  background: transparent;
+  box-shadow: none;
+}
+.hm-pri-dot.hm-pri-high { background: var(--color-red, #e5484d); border-color: transparent; }
+.hm-pri-dot.hm-pri-med { background: var(--color-orange, #f5a623); border-color: transparent; }
+.hm-pri-dot.hm-pri-low { background: var(--color-blue, #4c9aff); border-color: transparent; }
+.hm-todo-task.hm-pri-high { border-left: 3px solid var(--color-red, #e5484d); }
+.hm-todo-task.hm-pri-med { border-left: 3px solid var(--color-orange, #f5a623); }
+.hm-todo-task.hm-pri-low { border-left: 3px solid var(--color-blue, #4c9aff); }
+.hm-due-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--background-modifier-border);
+  color: var(--text-muted);
+  box-shadow: none;
+}
+.hm-due-badge.hm-overdue { background: color-mix(in srgb, var(--color-red, #e5484d) 22%, transparent); color: var(--color-red, #e5484d); font-weight: 600; }
+.hm-due-badge.hm-due-today { background: color-mix(in srgb, var(--color-orange, #f5a623) 24%, transparent); color: var(--color-orange, #f5a623); font-weight: 600; }
+.hm-due-badge.hm-due-empty { background: transparent; color: var(--text-faint); padding: 2px 4px; }
+.hm-due-badge.hm-due-empty svg { width: 13px; height: 13px; }
+
+/* ---------- 习惯：本周视图 ---------- */
+.hm-habit-week { display: flex; gap: 5px; margin: 8px 0; }
+.hm-week-day { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+.hm-week-wd { font-size: var(--font-ui-smaller); color: var(--text-faint); }
+.hm-week-dot {
+  width: 22px; height: 22px; border-radius: 7px; cursor: pointer;
+  background: var(--background-modifier-border);
+  transition: transform 0.1s var(--hm-ease), background 0.15s;
+}
+.hm-week-dot:hover { transform: scale(1.12); }
+.hm-week-dot.hm-week-done { background: var(--hm-accent); }
+.hm-week-dot.hm-week-today { outline: 2px solid var(--hm-accent); outline-offset: 1px; }
+
+/* ---------- AI 工具条 / 消息工具 ---------- */
+.hm-aichat-toolbar { display: flex; align-items: center; gap: 10px; margin: 8px 0 4px; font-size: var(--font-ui-small); }
+.hm-aichat-ctx { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; color: var(--text-muted); }
+.hm-aichat-msgtools { display: flex; gap: 4px; margin-top: 6px; opacity: 0.65; }
+.hm-aichat-msg:hover .hm-aichat-msgtools { opacity: 1; }
+.hm-aichat-msgtools .hm-icon-btn { font-size: 11px; }
+
+/* ---------- 今日概览 ---------- */
+.hm-overview-grid { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 420px) { .hm-overview-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---------- 每日一言 ---------- */
+.hm-quote-text { font-size: 1.12em; line-height: 1.6; color: var(--text-normal); font-style: italic; }
+.hm-quote-by { margin-top: 8px; text-align: right; }
+.hm-quote-actions { margin-top: 8px; display: flex; justify-content: flex-end; }
+
+/* ---------- 自定义弹窗 ---------- */
+.hm-modal .modal-content,
+.hm-modal { --hm-accent: var(--interactive-accent); }
+.hm-modal .modal-title {
+  font-size: 1.15em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+.hm-modal-desc { color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
+.hm-modal-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  font-size: 1em;
+  border-radius: 10px;
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-primary);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.hm-modal-input:focus {
+  outline: none;
+  border-color: var(--hm-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--interactive-accent) 22%, transparent);
+}
+.hm-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+.hm-modal-footer button { border-radius: 8px; padding: 6px 16px; }
+.hm-modal-options { display: flex; flex-direction: column; gap: 8px; }
+.hm-modal-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  text-align: left;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-primary);
+  box-shadow: none;
+  transition: border-color 0.12s, background 0.12s, transform 0.1s var(--hm-ease, ease);
+}
+.hm-modal-option:hover {
+  border-color: var(--hm-accent);
+  background: color-mix(in srgb, var(--interactive-accent) 8%, transparent);
+  transform: translateY(-1px);
+}
+.hm-modal-option-label { font-weight: 600; }
+.hm-modal-option-desc { font-size: var(--font-ui-small); color: var(--text-muted); }
+
+/* 空状态统一弱化 */
+.hm-card-body > .hm-muted:only-child { padding: 8px 0; }

@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>Homepage Modules 2.0 Promo</title>
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  :root {
+    /* 深色主题，给插件组件提供 Obsidian 同名变量 */
+    --background-primary: #161b22;
+    --background-secondary: #1b222c;
+    --background-modifier-border: #2b3340;
+    --background-modifier-hover: #232b36;
+    --text-normal: #e8eef5;
+    --text-muted: #9aa7b4;
+    --text-faint: #66727f;
+    --text-on-accent: #04231a;
+    --text-accent: #34d399;
+    --text-success: #34d399;
+    --text-error: #f87171;
+    --interactive-accent: #34d399;
+    --color-red: #f87171;
+    --color-green: #34d399;
+    --color-orange: #fbbf24;
+    --color-blue: #60a5fa;
+    --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-l: 0 16px 48px rgba(0, 0, 0, 0.55);
+    --radius-m: 12px;
+    --font-ui-small: 15px;
+    --font-ui-smaller: 13px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    color: var(--text-normal);
+  }
+  .stage {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background:
+      radial-gradient(1200px 800px at 80% -10%, rgba(52, 211, 153, 0.18), transparent 60%),
+      radial-gradient(1000px 900px at -10% 110%, rgba(96, 165, 250, 0.14), transparent 60%),
+      linear-gradient(160deg, #0e1217 0%, #131922 100%);
+    font-size: 24px;
+  }
+  .grain { position: absolute; inset: 0; opacity: 0.04; pointer-events: none;
+    background-image: radial-gradient(rgba(255,255,255,.8) 1px, transparent 1px);
+    background-size: 4px 4px; }
+  .brand {
+    position: absolute; top: 64px; left: 72px;
+    display: flex; align-items: center; gap: 14px;
+    font-weight: 700; letter-spacing: 0.02em;
+  }
+  .brand .dot { width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, #34d399, #22d3ee);
+    display: flex; align-items: center; justify-content: center; color: #04231a; font-size: 24px; }
+  .brand small { display:block; color: var(--text-muted); font-weight: 500; font-size: 18px; letter-spacing: .12em; }
+  .scene { position: absolute; inset: 0; display: none; flex-direction: column;
+    justify-content: center; padding: 0 80px; gap: 36px; }
+  .scene.on { display: flex; }
+  .cap { }
+  .cap .emoji { font-size: 56px; }
+  .cap h1 { margin: 8px 0 0; font-size: 78px; line-height: 1.12; font-weight: 800; letter-spacing: -0.02em; }
+  .cap h1 .hl { color: var(--interactive-accent); }
+  .cap p { margin: 18px 0 0; font-size: 32px; color: var(--text-muted); line-height: 1.5; }
+  .mock { transform: scale(1.55); transform-origin: top left; width: 64.5%; }
+  .mock-wrap { display: flex; justify-content: center; margin-top: 20px; min-height: 720px; }
+  .mock .hm-card { box-shadow: var(--shadow-l); }
+  /* hero */
+  .hero { align-items: flex-start; }
+  .hero h1 { font-size: 96px; }
+  .hero .badge { display:inline-block; margin-top: 28px; padding: 12px 26px; border-radius: 999px;
+    background: var(--interactive-accent); color: var(--text-on-accent); font-weight: 800; font-size: 34px; }
+  .hero .feats { margin-top: 44px; display: flex; flex-wrap: wrap; gap: 14px; }
+  .hero .feats span { padding: 10px 20px; border: 1px solid var(--background-modifier-border);
+    border-radius: 999px; color: var(--text-muted); font-size: 26px; }
+  /* price */
+  .price h1 { font-size: 92px; }
+  .price .row { display:flex; gap: 18px; margin-top: 30px; }
+  .price .tag { padding: 22px 30px; border-radius: 18px; border: 1px solid var(--background-modifier-border);
+    background: var(--background-primary); }
+  .price .tag .k { color: var(--text-muted); font-size: 26px; }
+  .price .tag .v { font-size: 52px; font-weight: 800; margin-top: 6px; }
+  .price .tag.acc { background: var(--interactive-accent); color: var(--text-on-accent); border-color: transparent; }
+  .price .tag.acc .k { color: rgba(4,35,26,.7); }
+  .price .cta { margin-top: 44px; font-size: 34px; color: var(--text-normal); }
+  .price .cta b { color: var(--interactive-accent); }
+  /* heatmap mock */
+  .hm-svgwrap { width: 100%; overflow: hidden; }
+  /* montage grid */
+  .montage { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; width: 100%; }
+  .pageno { position: absolute; bottom: 56px; right: 80px; color: var(--text-faint); font-size: 22px; letter-spacing: .3em; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="grain"></div>
+  <div class="brand"><span class="dot">▦</span><div>Homepage Modules<small>OBSIDIAN · 2.0</small></div></div>
+
+  <!-- S1 HERO -->
+  <section class="scene hero" id="s1">
+    <div class="cap">
+      <div class="emoji">😶 → 🚀</div>
+      <h1>你的 Obsidian<br>还<span class="hl">空荡荡</span>的？</h1>
+      <p>一个插件，把冷冰冰的主页<br>变成真正能用的「效率中枢」</p>
+      <span class="badge">30 个模块 · 一个插件</span>
+      <div class="feats"><span>数据全本地</span><span>主题自适应</span><span>拖拽编排</span><span>一个代码块即用</span></div>
+    </div>
+  </section>
+
+  <!-- S2 POMODORO -->
+  <section class="scene" id="s2">
+    <div class="cap"><div class="emoji">🍅</div><h1>番茄<span class="hl">环形钟</span></h1><p>关掉 Obsidian 也不丢进度 · 桌面状态栏 · 全年热力图</p></div>
+    <div class="mock-wrap"><div class="mock"><div class="hm-card hm-pomo">
+      <div class="hm-card-header"><span class="hm-card-icon">🍅</span><span class="hm-card-title">番茄专注</span></div>
+      <div class="hm-card-body">
+        <div class="hm-pomo-ring-wrap" id="ring">
+          <svg class="hm-pomo-ring" viewBox="0 0 100 100" width="100%" height="100%">
+            <circle class="hm-pomo-ring-track" cx="50" cy="50" r="44"></circle>
+            <circle id="ringp" class="hm-pomo-ring-prog" cx="50" cy="50" r="44"></circle>
+          </svg>
+          <div class="hm-pomo-center"><div class="hm-pomo-time">18:24</div><div class="hm-pomo-mode">专注</div></div>
+        </div>
+        <div class="hm-pomo-tally">今日 <b>🍅 5</b> · 125 分钟</div>
+        <div class="hm-pomo-controls"><button class="mod-warning">停止</button><button class="hm-icon-btn">⧉</button></div>
+      </div>
+    </div></div></div>
+  </section>
+
+  <!-- S3 TODO -->
+  <section class="scene" id="s3">
+    <div class="cap"><div class="emoji">✅</div><h1>待办<span class="hl">看板</span></h1><p>优先级彩标 · 截止日期 · 一键派单到今日</p></div>
+    <div class="mock-wrap"><div class="mock"><div class="hm-card hm-todo">
+      <div class="hm-card-header"><span class="hm-card-icon">🗂</span><span class="hm-card-title">待办看板</span></div>
+      <div class="hm-card-body"><div class="hm-todo-tasks">
+        <div class="hm-todo-task hm-pri-high"><div class="hm-todo-task-top"><input type="checkbox"><span class="hm-pri-dot hm-pri-high"></span><span class="hm-todo-task-title">完成插件 2.0 发布</span><span class="hm-due-badge hm-due-today">今天</span></div></div>
+        <div class="hm-todo-task hm-pri-med"><div class="hm-todo-task-top"><input type="checkbox"><span class="hm-pri-dot hm-pri-med"></span><span class="hm-todo-task-title">录制演示视频</span><span class="hm-due-badge">06-05</span></div></div>
+        <div class="hm-todo-task hm-pri-low hm-done"><div class="hm-todo-task-top"><input type="checkbox" checked><span class="hm-pri-dot hm-pri-low"></span><span class="hm-todo-task-title">整理小红书文案</span></div></div>
+      </div></div>
+    </div></div></div>
+  </section>
+
+  <!-- S4 VOCAB -->
+  <section class="scene" id="s4">
+    <div class="cap"><div class="emoji">📖</div><h1>背单词 <span class="hl">FSRS</span></h1><p>四级/六级/雅思 · 内置 1.4 万词 · 进度·正确率·错词本</p></div>
+    <div class="mock-wrap"><div class="mock"><div class="hm-card hm-vocab">
+      <div class="hm-card-header"><span class="hm-card-icon">📖</span><span class="hm-card-title">背单词</span></div>
+      <div class="hm-card-body">
+        <div class="hm-vocab-levels">
+          <div class="hm-vocab-level"><div class="hm-vocab-level-head"><span class="hm-vocab-level-name">六级</span><span class="hm-muted">已学 320/5406 · 正确率 88%</span></div><div class="hm-bar"><div class="hm-bar-fill" style="width:38%"></div></div></div>
+          <div class="hm-vocab-level"><div class="hm-vocab-level-head"><span class="hm-vocab-level-name">雅思</span><span class="hm-muted">已学 210/5038 · 正确率 91%</span></div><div class="hm-bar"><div class="hm-bar-fill" style="width:26%"></div></div></div>
+        </div>
+        <div class="hm-vocab-card"><span class="hm-badge">六级</span><div class="hm-vocab-word">resilient</div><div class="hm-vocab-reading hm-muted">/rɪˈzɪliənt/</div><div class="hm-vocab-meaning">adj. 有韧性的，能恢复的</div>
+          <div class="hm-vocab-rate"><button class="hm-rate-again">忘记</button><button>困难</button><button class="hm-rate-good">认识</button><button>简单</button></div></div>
+      </div>
+    </div></div></div>
+  </section>
+
+  <!-- S5 HABIT + HEATMAP -->
+  <section class="scene" id="s5">
+    <div class="cap"><div class="emoji">🎯</div><h1>习惯 <span class="hl">热力图</span></h1><p>坚持/限额/戒断 · 本周视图 · 全年热力图 · 每日提醒</p></div>
+    <div class="mock-wrap"><div class="mock"><div class="hm-card hm-habit">
+      <div class="hm-card-header"><span class="hm-card-icon">🎯</span><span class="hm-card-title">习惯打卡</span></div>
+      <div class="hm-card-body"><div class="hm-habit-list"><div class="hm-habit-row">
+        <div class="hm-habit-head"><div class="hm-habit-info"><span class="hm-habit-name">早睡</span><span class="hm-badge">坚持</span><span class="hm-muted">🔥 23 天</span></div></div>
+        <div class="hm-habit-week" id="week"></div>
+        <div id="hm"></div>
+      </div></div></div>
+    </div></div></div>
+  </section>
+
+  <!-- S6 AI -->
+  <section class="scene" id="s6">
+    <div class="cap"><div class="emoji">🤖</div><h1>AI <span class="hl">助手</span></h1><p>DeepSeek · 通义千问 Qwen · Kimi · 读当前笔记 · 翻译/润色</p></div>
+    <div class="mock-wrap"><div class="mock"><div class="hm-card hm-aichat">
+      <div class="hm-card-header"><span class="hm-card-icon">🤖</span><span class="hm-card-title">AI 助手</span></div>
+      <div class="hm-card-body"><div class="hm-aichat-list">
+        <div class="hm-aichat-msg hm-user">帮我把这段笔记总结成 3 条待办</div>
+        <div class="hm-aichat-msg hm-assistant">1. 完成 2.0 发布与打包<br>2. 录制并上传演示视频<br>3. 发布小红书并回复评论<div class="hm-aichat-msgtools"><button class="hm-icon-btn">写入笔记</button><button class="hm-icon-btn">复制</button></div></div>
+      </div><div class="hm-aichat-toolbar"><label class="hm-aichat-ctx"><input type="checkbox" checked> 附带当前笔记</label></div></div>
+    </div></div></div>
+  </section>
+
+  <!-- S7 OVERVIEW / MONTAGE -->
+  <section class="scene" id="s7">
+    <div class="cap"><div class="emoji">📊</div><h1>30 个模块<br><span class="hl">一屏看全</span></h1><p>今日概览 · 记账 · 日历 · 天气 · 读书 · 倒计时 · 每日一言…</p></div>
+    <div class="mock-wrap"><div class="mock" style="transform:scale(1.5)">
+      <div class="hm-card"><div class="hm-card-header"><span class="hm-card-icon">▦</span><span class="hm-card-title">今日概览</span></div>
+        <div class="hm-card-body"><div class="hm-stats-grid hm-overview-grid">
+          <div class="hm-stat-cell"><div class="hm-stat-value">4/6</div><div class="hm-stat-label hm-muted">今日待办</div></div>
+          <div class="hm-stat-cell"><div class="hm-stat-value">🍅5</div><div class="hm-stat-label hm-muted">专注</div></div>
+          <div class="hm-stat-cell"><div class="hm-stat-value">3/4</div><div class="hm-stat-label hm-muted">习惯</div></div>
+          <div class="hm-stat-cell"><div class="hm-stat-value" style="color:var(--color-red)">1</div><div class="hm-stat-label hm-muted">逾期</div></div>
+        </div></div></div>
+    </div></div>
+  </section>
+
+  <!-- S8 PRICE / CTA -->
+  <section class="scene price" id="s8">
+    <div class="cap">
+      <div class="emoji">💛</div>
+      <h1><span class="hl">7 天</span>免费试用</h1>
+      <div class="row">
+        <div class="tag"><div class="k">试用</div><div class="v">0 元 / 7 天</div></div>
+        <div class="tag acc"><div class="k">买断 · 永久</div><div class="v">59 元</div></div>
+      </div>
+      <div class="cta">BRAT 安装 · 一个 key 绑 3 台<br>想要的扣 <b>「插件」</b> 或私信我 💬</div>
+    </div>
+  </section>
+
+  <div class="pageno" id="pageno"></div>
+</div>
+
+<script>
+  // 番茄环进度（剩余 ~73%）
+  const C = 2 * Math.PI * 44;
+  const p = document.getElementById("ringp");
+  if (p) { p.setAttribute("stroke-dasharray", C); p.setAttribute("stroke-dashoffset", C * 0.27); }
+
+  // 本周视图
+  const week = document.getElementById("week");
+  if (week) {
+    const wd = ["一","二","三","四","五","六","日"];
+    const done = [1,1,1,0,1,1,0];
+    wd.forEach((d,i)=>{ const c=document.createElement("div"); c.className="hm-week-day";
+      const s=document.createElement("span"); s.className="hm-week-wd"; s.textContent=d; c.appendChild(s);
+      const dot=document.createElement("div"); dot.className="hm-week-dot"+(done[i]?" hm-week-done":"")+(i===5?" hm-week-today":""); c.appendChild(dot); week.appendChild(c); });
+  }
+
+  // 热力图（SVG，伪随机）
+  const hm = document.getElementById("hm");
+  if (hm) {
+    const NS="http://www.w3.org/2000/svg"; const cell=12, gap=3, weeks=30, rows=7;
+    const svg=document.createElementNS(NS,"svg"); svg.setAttribute("width", weeks*(cell+gap));
+    svg.setAttribute("height", rows*(cell+gap)); svg.setAttribute("class","hm-heatmap-svg");
+    let seed=7; const rnd=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;};
+    const lv=[0.15,0.35,0.55,0.78,1];
+    for(let w=0;w<weeks;w++)for(let r=0;r<rows;r++){const rect=document.createElementNS(NS,"rect");
+      rect.setAttribute("x",w*(cell+gap)); rect.setAttribute("y",r*(cell+gap));
+      rect.setAttribute("width",cell); rect.setAttribute("height",cell); rect.setAttribute("rx",2);
+      rect.setAttribute("class","hm-heatmap-cell"); const v=rnd();
+      if(v<0.45){rect.setAttribute("fill","var(--background-modifier-border)");}
+      else{rect.setAttribute("fill","var(--interactive-accent)"); rect.setAttribute("fill-opacity", lv[Math.floor(rnd()*5)]);}
+      svg.appendChild(rect);}
+    const wrap=document.createElement("div"); wrap.className="hm-heatmap"; wrap.appendChild(svg); hm.appendChild(wrap);
+  }
+
+  // 场景切换 + 页码
+  const scenes = Array.from(document.querySelectorAll(".scene"));
+  function show(n){ scenes.forEach((s,i)=>s.classList.toggle("on", i===n));
+    document.getElementById("pageno").textContent = (n+1)+" / "+scenes.length; }
+  function fromHash(){ const n=parseInt((location.hash||"#1").slice(1),10)||1; show(Math.max(0,Math.min(scenes.length-1,n-1))); }
+  window.addEventListener("hashchange", fromHash); fromHash();
+</script>
+</body>
+</html>

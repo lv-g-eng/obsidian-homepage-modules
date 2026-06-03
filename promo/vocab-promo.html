@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>背单词演示</title>
+<link rel="stylesheet" href="../styles.css" />
+<style>
+  :root {
+    /* 浅色主题，录屏更清晰；强调色用学习蓝 */
+    --background-primary: #ffffff;
+    --background-secondary: #f4f6f8;
+    --background-modifier-border: #e3e8ee;
+    --background-modifier-hover: #eef2f6;
+    --text-normal: #1f2733;
+    --text-muted: #66727f;
+    --text-faint: #aab4bf;
+    --text-on-accent: #ffffff;
+    --text-accent: #2563eb;
+    --text-success: #16a34a;
+    --text-error: #dc2626;
+    --interactive-accent: #2563eb;
+    --color-red: #ef4444;
+    --color-green: #16a34a;
+    --color-orange: #f59e0b;
+    --color-blue: #3b82f6;
+    --shadow-s: 0 1px 2px rgba(20, 40, 80, 0.08);
+    --shadow-l: 0 18px 50px rgba(20, 40, 80, 0.18);
+    --radius-m: 12px;
+    --font-ui-small: 16px;
+    --font-ui-smaller: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif; }
+  .stage {
+    position: relative; width: 1080px; height: 1920px; overflow: hidden; font-size: 26px;
+    background:
+      radial-gradient(900px 700px at 85% -5%, rgba(37,99,235,0.12), transparent 60%),
+      radial-gradient(800px 800px at -5% 105%, rgba(22,163,74,0.10), transparent 60%),
+      linear-gradient(160deg, #eef3fb 0%, #e8edf5 100%);
+  }
+  .brand { position: absolute; top: 60px; left: 72px; display: flex; align-items: center; gap: 14px; font-weight: 800; color: #1f2733; }
+  .brand .dot { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #2563eb, #3b82f6); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .brand small { display: block; color: var(--text-muted); font-weight: 600; font-size: 17px; letter-spacing: .12em; }
+
+  .phone {
+    position: absolute; top: 210px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 1240px; border-radius: 56px; background: #0c1118;
+    padding: 18px; box-shadow: 0 30px 80px rgba(20,40,80,.28);
+  }
+  .phone::before { content:""; position:absolute; top:22px; left:50%; transform:translateX(-50%); width:150px; height:30px; background:#0c1118; border-radius:0 0 18px 18px; z-index:3; }
+  .screen { width: 100%; height: 100%; border-radius: 40px; background: var(--background-primary); overflow: hidden; position: relative; padding: 26px 22px; }
+  .screen .hm-card { box-shadow: none; border: none; }
+
+  .cursor { position: absolute; width: 60px; height: 60px; z-index: 9; pointer-events: none; filter: drop-shadow(0 4px 6px rgba(0,0,0,.3)); }
+  .tapring { position: absolute; width: 70px; height: 70px; border: 5px solid var(--interactive-accent); border-radius: 50%; z-index: 8; opacity: .8; }
+
+  .caption { position: absolute; left: 50%; transform: translateX(-50%); bottom: 120px; display: flex; align-items: center; gap: 14px;
+    background: #0c1118; color: #fff; padding: 18px 30px; border-radius: 999px; font-size: 30px; font-weight: 700; box-shadow: 0 12px 30px rgba(0,0,0,.25); }
+  .caption .num { background: var(--interactive-accent); color: #fff; width: 44px; height: 44px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 26px; }
+
+  .scene { display: none; }
+  .scene.on { display: block; }
+  .pageno { position: absolute; bottom: 56px; right: 80px; color: #94a3b8; font-size: 22px; letter-spacing: .3em; }
+
+  /* 词库选择列表（仿 modal） */
+  .pick { display:flex; flex-direction:column; gap: 12px; }
+  .pick .opt { padding: 18px 20px; border:1px solid var(--background-modifier-border); border-radius: 12px; font-weight:600; display:flex; justify-content:space-between; }
+  .pick .opt.hot { border-color: var(--interactive-accent); background: rgba(37,99,235,.06); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="brand"><span class="dot">📖</span><div>背单词 · vocab<small>HOMEPAGE MODULES</small></div></div>
+
+  <div class="phone"><div class="screen" id="screen">
+    <!-- 动态注入每个场景内容 -->
+  </div></div>
+
+  <!-- 光标 + 点击环 -->
+  <svg class="cursor" id="cursor" viewBox="0 0 24 24" fill="#1f2733" style="left:700px;top:900px;"><path d="M4 2 L4 20 L9 15 L12.5 22 L15 21 L11.5 14 L19 14 Z" stroke="#fff" stroke-width="1"/></svg>
+  <div class="tapring" id="tapring" style="left:690px;top:890px;"></div>
+
+  <div class="caption"><span class="num" id="cnum">1</span><span id="ctext">一个 vocab 代码块 = 背单词系统</span></div>
+  <div class="pageno" id="pageno"></div>
+</div>
+
+<script>
+  const LV = "六级"; // demo level label
+  // 各场景：屏幕 HTML + 字幕 + 光标位置(屏内相对，後转绝对)
+  const cardOpen = (inner) => `<div class="hm-card hm-vocab"><div class="hm-card-header"><span class="hm-card-icon">📖</span><span class="hm-card-title">背单词</span></div><div class="hm-card-body">${inner}</div></div>`;
+
+  const levelStats = `
+    <div class="hm-vocab-levels">
+      <div class="hm-vocab-level"><div class="hm-vocab-level-head"><span class="hm-vocab-level-name">六级</span><span class="hm-muted">已学 320/5406 · 正确率 88%</span></div><div class="hm-bar"><div class="hm-bar-fill" style="width:38%"></div></div></div>
+      <div class="hm-vocab-level"><div class="hm-vocab-level-head"><span class="hm-vocab-level-name">雅思</span><span class="hm-muted">已学 410/5038 · 正确率 91%</span></div><div class="hm-bar"><div class="hm-bar-fill" style="width:30%"></div></div></div>
+    </div>`;
+
+  const filterBar = (wrongActive) => `<div class="hm-vocab-filter">
+    <button class="hm-pill${wrongActive?'':' hm-active'}">全部</button>
+    <button class="hm-pill">六级</button><button class="hm-pill">雅思</button>
+    <button class="hm-pill${wrongActive?' hm-active':''}">错词本 6</button></div>`;
+
+  const wordCard = (reveal) => `<div class="hm-vocab-card"><span class="hm-badge">六级</span><div class="hm-vocab-word">resilient</div><div class="hm-vocab-reading hm-muted">/rɪˈzɪliənt/</div>${reveal?`<div class="hm-vocab-meaning">adj. 有韧性的，能恢复的</div><div class="hm-vocab-rate"><button class="hm-rate-again">忘记</button><button>困难</button><button class="hm-rate-good">认识</button><button>简单</button></div>`:`<button class="mod-cta">显示释义</button>`}</div>`;
+
+  function heatmap() {
+    const NS="http://www.w3.org/2000/svg"; const cell=12,gap=3,weeks=26,rows=7;
+    let s=`<div class="hm-heatmap"><svg width="${weeks*(cell+gap)}" height="${rows*(cell+gap)}">`;
+    let seed=11; const rnd=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;};
+    const lv=[0.18,0.4,0.6,0.8,1];
+    for(let wk=0;wk<weeks;wk++)for(let r=0;r<rows;r++){const v=rnd();
+      const fill=v<0.45?'var(--background-modifier-border)':'var(--interactive-accent)';
+      const op=v<0.45?1:lv[Math.floor(rnd()*5)];
+      s+=`<rect x="${wk*(cell+gap)}" y="${r*(cell+gap)}" width="${cell}" height="${cell}" rx="2" fill="${fill}" fill-opacity="${op}" stroke="var(--background-primary)" stroke-width="1.5"/>`;}
+    return s+`</svg></div>`;
+  }
+
+  // 场景定义：{html, num, text, cur:[x,y] 相对屏幕左上(屏幕在 stage 内：left=240,top=236,inner padding22)}
+  const SCREEN_X=240+22, SCREEN_Y=210+18+26; // phone left/top + padding
+  const S = [
+    { html: cardOpen(`<div class="hm-muted">卡片库为空，选择一个分级词库导入。</div><button class="mod-cta" style="margin-top:12px">导入分级词库</button>`), num:1, text:"一个 vocab 代码块 = 背单词系统", cur:[300,150] },
+    { html: cardOpen(`<div class="pick"><div class="opt">四级（完整 3846 词）</div><div class="opt hot">雅思（完整 5038 词）<span>›</span></div><div class="opt">六级（完整 5406 词）</div></div>`), num:2, text:"内置四级/六级/雅思 ≈1.4万词 · 离线", cur:[360,210] },
+    { html: cardOpen(wordCard(false)), num:3, text:"FSRS 间隔重复（Anki 同款算法）", cur:[300,360] },
+    { html: cardOpen(wordCard(true)), num:4, text:"评分四档 · 按记忆曲线安排复习", cur:[360,470] },
+    { html: cardOpen(levelStats + wordCard(false)), num:5, text:"按等级显示进度 + 正确率", cur:[420,120] },
+    { html: cardOpen(filterBar(true) + `<div class="hm-vocab-card"><span class="hm-badge">六级</span><div class="hm-vocab-word">tedious</div><div class="hm-vocab-reading hm-muted">/ˈtiːdiəs/</div><button class="mod-cta">显示释义</button></div>`), num:6, text:"答错自动进「错词本」· 集中刷", cur:[470,150] },
+    { html: cardOpen(`<div class="hm-vocab-stat hm-muted">本年已复习 1,280 次</div>${heatmap()}`), num:7, text:"全年复习热力图 · 越背越爽", cur:[300,260] },
+    { html: cardOpen(levelStats + `<div style="text-align:center;margin-top:18px"><div style="font-size:1.5em;font-weight:800">7 天免费 · 59 买断</div><div class="hm-muted" style="margin-top:8px">BRAT 安装 · 扣「插件」私信</div></div>`), num:8, text:"30 个模块之一 · 现在就装", cur:[300,120] },
+  ];
+
+  const scr = document.getElementById("screen");
+  const cur = document.getElementById("cursor");
+  const ring = document.getElementById("tapring");
+  function show(i){
+    const s=S[i]; scr.innerHTML=s.html;
+    document.getElementById("cnum").textContent=s.num;
+    document.getElementById("ctext").textContent=s.text;
+    cur.style.left=(SCREEN_X+s.cur[0])+"px"; cur.style.top=(SCREEN_Y+s.cur[1])+"px";
+    ring.style.left=(SCREEN_X+s.cur[0]-8)+"px"; ring.style.top=(SCREEN_Y+s.cur[1]-8)+"px";
+    document.getElementById("pageno").textContent=(i+1)+" / "+S.length;
+  }
+  function fromHash(){ const n=parseInt((location.hash||"#1").slice(1),10)||1; show(Math.max(0,Math.min(S.length-1,n-1))); }
+  window.addEventListener("hashchange", fromHash); fromHash();
+</script>
+</body>
+</html>

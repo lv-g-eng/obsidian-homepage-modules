@@ -1,0 +1,28 @@
+# build
+main.js
+*.js.map
+release/
+
+# deps
+node_modules/
+
+# obsidian local plugin data
+data.json
+
+# scrape artifacts
+.playwright-mcp/
+obsidian-homepage-note.png
+
+# promo build artifacts (keep the .html, ignore rendered media)
+promo/*.mp4
+promo-*.png
+v[0-9].png
+publish*.png
+snap-*.md
+
+# large source data (wordbank-full.json is generated & shipped, csv is not)
+ecdict.csv
+
+# os / editor
+.DS_Store
+*.log
