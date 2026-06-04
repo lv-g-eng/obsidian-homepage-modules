@@ -1,6 +1,42 @@
-# Homepage Modules
+<h1 align="center">Homepage Modules</h1>
 
-一个插件塞进 **28 个模块**：待办看板、番茄专注、习惯打卡、FSRS 背单词、AI 助手、记账、日历、天气……每个模块**一个代码块即用**，数据**全本地**，主页**拖拽编排**、主题自适应、Ctrl+滚轮缩放。桌面 + 移动双端。
+<p align="center">
+一个插件塞进 <b>28 个模块</b>：待办看板 · 番茄专注 · 习惯打卡 · FSRS 背单词 · AI 助手 · 记账 · 日历 · 天气……<br/>
+每个模块 <b>一个代码块即用</b>，数据 <b>全本地</b>，主页 <b>拖拽编排</b>、主题自适应、Ctrl+滚轮缩放。桌面 + 移动双端。
+</p>
+
+<p align="center">
+  <img src="assets/demo-homepage.gif" width="300" alt="主页模块演示" />
+  &nbsp;&nbsp;
+  <img src="assets/demo-vocab.gif" width="300" alt="FSRS 背单词演示" />
+</p>
+
+## ⚡ 安装（BRAT，30 秒）
+
+还没上架社区市场，用 **BRAT** 即可安装，自动跟随更新：
+
+1. 社区插件市场搜索安装 **BRAT**（Obsidian42 - BRAT）并启用。
+2. 命令面板运行 **BRAT: Add a beta plugin**，或在 BRAT 设置里点 **Add Beta Plugin**。
+3. 仓库地址填：
+   ```
+   lv-g-eng/obsidian-homepage-modules
+   ```
+4. 在「第三方插件」里启用 **Homepage Modules**。
+5. 新建一篇笔记，写个代码块就能用：
+
+   ````markdown
+   ```pomodoro
+   title: 番茄专注
+   focus: 25
+   break: 5
+   ```
+   ````
+
+   或运行命令 **生成工具箱主页** 一键铺满全部模块。
+
+> 💡 背单词的完整词库（四级/六级/雅思 ≈1.4 万词）不打进插件本体，**首次使用会自动从 Release 下载并缓存**，BRAT 用户无需手动放文件。
+
+价格：装上 **免费试用 7 天** 全解锁；**59 元一次买断、永久使用**（非订阅）。免费模块 `clock` `links` `countdown` `random` 永久可用。
 
 > 这是对小红书付费插件「Obsidian 模块化主页」的自研实现，含可售卖的授权体系。
 
@@ -17,6 +53,10 @@
 | 工具 (1) | `random` 随机决定 |
 
 免费模块：`clock` `links` `countdown` `random`；其余为专业版（7 天试用解锁）。
+
+---
+
+> 以下为开发 / 自部署内容，普通用户看上面「安装」即可。
 
 ## 开发 / 本地加载
 
