@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>小红书封面</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700;900&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #06070a; }
+  /* 小红书竖封 3:4 = 1080x1440 */
+  .cover {
+    position: relative; width: 1080px; height: 1440px; overflow: hidden;
+    font-family: "Noto Sans SC", system-ui, sans-serif; color: #f3f5fb;
+    --accent: #7c6cff;
+    --ink: #0c0e15;
+    background:
+      radial-gradient(1100px 760px at 84% -8%, color-mix(in srgb, var(--accent) 38%, transparent), transparent 62%),
+      radial-gradient(900px 900px at -12% 112%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%),
+      linear-gradient(155deg, #11131c 0%, #0a0b11 60%, #07080c 100%);
+  }
+  /* 网格纹理 */
+  .cover::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+    background-image:
+      linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 72px 72px; mask-image: linear-gradient(180deg, #000 0%, transparent 78%);
+  }
+  /* 颗粒噪点 */
+  .cover::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .06; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .pad { position: absolute; inset: 0; padding: 84px 84px 76px; display: flex; flex-direction: column; }
+
+  /* 顶栏：品牌字标 + kicker */
+  .top { display: flex; align-items: center; justify-content: space-between; }
+  .wordmark { display: flex; align-items: center; gap: 18px; }
+  .logo {
+    width: 64px; height: 64px; border-radius: 18px; position: relative; flex: none;
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #fff 8%));
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  /* logo 内 2x2 模块格 */
+  .logo i { position: absolute; width: 20px; height: 20px; border-radius: 6px; background: rgba(10,12,20,.92); }
+  .logo i:nth-child(1){ top:11px; left:11px } .logo i:nth-child(2){ top:11px; right:11px }
+  .logo i:nth-child(3){ bottom:11px; left:11px } .logo i:nth-child(4){ bottom:11px; right:11px; background: rgba(10,12,20,.45) }
+  .wordmark b { font-family: "Unbounded"; font-weight: 800; font-size: 30px; letter-spacing: -.01em; line-height: 1; }
+  .wordmark small { display:block; font-weight:600; font-size: 16px; letter-spacing: .34em; color: rgba(243,245,251,.5); margin-top: 6px; }
+  .kicker {
+    font-family: "Unbounded"; font-weight: 600; font-size: 17px; letter-spacing: .22em;
+    color: var(--accent); border: 1.5px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    padding: 12px 20px; border-radius: 999px; background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  /* 主标题区 */
+  .mid { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .eyebrow { font-size: 30px; font-weight: 700; color: rgba(243,245,251,.62); margin-bottom: 26px; letter-spacing: .02em; }
+  h1 { font-weight: 900; font-size: 132px; line-height: 1.04; letter-spacing: -.02em; }
+  h1 .hl { position: relative; white-space: nowrap; color: #fff; }
+  h1 .hl::after {
+    content: ""; position: absolute; left: -6px; right: -6px; bottom: 10px; height: 30px; z-index: -1; border-radius: 6px;
+    background: var(--accent); transform: rotate(-1.2deg);
+    box-shadow: 0 12px 40px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+
+  /* 卖点芯片 */
+  .chips { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 52px; }
+  .chip {
+    font-size: 30px; font-weight: 700; padding: 16px 26px; border-radius: 16px;
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.10);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .chip .d { width: 14px; height: 14px; border-radius: 5px; background: var(--accent); }
+
+  /* 底部价签 */
+  .foot { display: flex; align-items: center; justify-content: space-between; }
+  .price { display: flex; align-items: baseline; gap: 14px; }
+  .price .free { font-size: 34px; font-weight: 800; color: #fff; }
+  .price .buy { font-size: 30px; font-weight: 700; color: var(--accent); }
+  .price .sub { font-size: 22px; font-weight: 600; color: rgba(243,245,251,.5); }
+  .brat {
+    font-family: "Unbounded"; font-weight: 600; font-size: 22px; letter-spacing: .14em; color: #0a0b11;
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #fff 12%));
+    padding: 16px 30px; border-radius: 999px; box-shadow: 0 14px 40px color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  /* 漂浮模块网格 motif（右上） */
+  .motif { position: absolute; top: 230px; right: 70px; display: grid; grid-template-columns: repeat(3, 64px); gap: 16px; opacity: .9; transform: rotate(8deg); }
+  .motif span { width: 64px; height: 64px; border-radius: 16px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09); }
+  .motif span.on { background: color-mix(in srgb, var(--accent) 70%, transparent); border-color: transparent; box-shadow: 0 8px 26px color-mix(in srgb, var(--accent) 45%, transparent); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+  const COVERS = {
+    home: { accent: "#7c6cff", kicker: "30 MODULES · 1 PLUGIN",
+      eyebrow: "你的 Obsidian 打开还空荡荡？",
+      head: ['空主页', { hl: '有救了' }],
+      chips: ["🍅 番茄专注", "✅ 待办看板", "📖 背单词", "🤖 AI 助手"], lit: [0,1,2,4,5,8] },
+    vocab: { accent: "#34d399", kicker: "FSRS · 14,000 WORDS",
+      eyebrow: "把 Anki 算法塞进 Obsidian",
+      head: ['背完', { hl: '四六级雅思' }],
+      chips: ["内置1.4万词", "FSRS间隔重复", "错词本", "全年热力图"], lit: [1,2,5,6,7] },
+    ai: { accent: "#38bdf8", kicker: "DEEPSEEK · QWEN · KIMI",
+      eyebrow: "笔记自己会干活",
+      head: ['把', { hl: 'AI' }, '塞进笔记'],
+      chips: ["选中即翻译润色", "读当前笔记", "摘要派单到待办", "今日晨报"], lit: [0,3,4,7,8] },
+    pomodoro: { accent: "#fb7185", kicker: "FOCUS · HEATMAP",
+      eyebrow: "别的番茄钟和你记笔记是两个世界",
+      head: ['关掉也', { hl: '不丢进度' }],
+      chips: ["状态栏倒计时", "完成种进热力图", "长休息周期", "绑定待办专注"], lit: [0,1,4,6,7] },
+    habit: { accent: "#2dd4bf", kicker: "STREAK · HEATMAP",
+      eyebrow: "flag 总断在第三天？",
+      head: ['习惯坚持成', { hl: '一片绿' }],
+      chips: ["要做/限额/戒断", "连续天数streak", "本周视图", "每日提醒"], lit: [2,4,5,6,8] },
+    ledger: { accent: "#fbbf24", kicker: "LEDGER · BUDGET",
+      eyebrow: "记账 App 装一堆没一个坚持下来",
+      head: ['钱去哪了', { hl: '一目了然' }],
+      chips: ["记账+分类", "预算超支变红", "攒钱目标", "订阅到期提醒"], lit: [0,1,3,5,8] },
+  };
+  const order = ["home","vocab","ai","pomodoro","habit","ledger"];
+  const headHtml = (head) => head.map(p => typeof p === "string" ? p : `<span class="hl">${p.hl}</span>`).join("");
+  document.getElementById("root").innerHTML = order.map(key => {
+    const c = COVERS[key];
+    const chips = c.chips.map(t => `<span class="chip"><span class="d"></span>${t}</span>`).join("");
+    const motif = Array.from({length:9}, (_,i) => `<span class="${c.lit.includes(i)?"on":""}"></span>`).join("");
+    return `<div class="cover" data-key="${key}" style="--accent:${c.accent}">
+      <div class="pad">
+        <div class="top">
+          <div class="wordmark"><div class="logo"><i></i><i></i><i></i><i></i></div><div><b>Homepage</b><small>MODULES</small></div></div>
+          <div class="kicker">${c.kicker}</div>
+        </div>
+        <div class="mid">
+          <div class="eyebrow">${c.eyebrow}</div>
+          <h1>${headHtml(c.head)}</h1>
+          <div class="chips">${chips}</div>
+        </div>
+        <div class="foot">
+          <div class="price"><span class="free">7天免费</span><span class="buy">59买断·永久</span><span class="sub">非订阅</span></div>
+          <div class="brat">BRAT 安装</div>
+        </div>
+      </div>
+      <div class="motif">${motif}</div>
+    </div>`;
+  }).join("");
+</script>
+</body>
+</html>

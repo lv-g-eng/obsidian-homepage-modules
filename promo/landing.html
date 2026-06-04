@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Homepage Modules · Obsidian 模块化主页</title>
+<meta name="description" content="一个插件塞进 30 个模块：番茄专注、待办看板、FSRS 背单词、习惯打卡、AI 助手、记账。一个代码块即用，数据全本地。7 天免费试用，59 元买断永久。" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #7c6cff;
+    --bg: #07080c; --panel: #11131c; --line: rgba(255,255,255,.09);
+    --tx: #f3f5fb; --mut: rgba(243,245,251,.62); --faint: rgba(243,245,251,.4);
+    --max: 1080px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Noto Sans SC", system-ui, sans-serif; color: var(--tx); background: var(--bg);
+    line-height: 1.6; overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
+  .mono { font-family: "Unbounded"; letter-spacing: .04em; }
+  .accent { color: var(--accent); }
+
+  /* 背景氛围 */
+  .bg-glow { position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(1000px 700px at 82% -6%, color-mix(in srgb, var(--accent) 30%, transparent), transparent 60%),
+      radial-gradient(800px 800px at -10% 30%, color-mix(in srgb, #38bdf8 14%, transparent), transparent 55%),
+      linear-gradient(180deg, #0a0c14, #07080c);
+  }
+  .bg-grid { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .4;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 64px 64px; mask-image: radial-gradient(900px 600px at 50% 0%, #000, transparent 80%); }
+
+  /* 导航 */
+  nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(14px);
+    background: color-mix(in srgb, var(--bg) 72%, transparent); border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; }
+  .brand .logo { width: 36px; height: 36px; border-radius: 11px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 6px;
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #fff 14%)); }
+  .brand .logo span { border-radius: 3px; background: color-mix(in srgb, var(--bg) 85%, transparent); }
+  .brand .logo span:last-child { background: color-mix(in srgb, var(--bg) 45%, transparent); }
+  .nav-cta { font-weight: 700; font-size: 14px; padding: 10px 20px; border-radius: 999px;
+    background: var(--accent); color: #0a0b11; box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 40%, transparent); transition: transform .15s; }
+  .nav-cta:hover { transform: translateY(-2px); }
+
+  /* hero */
+  header { padding: 96px 0 60px; position: relative; }
+  .pill { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: var(--accent);
+    border: 1.5px solid color-mix(in srgb, var(--accent) 50%, transparent); background: color-mix(in srgb, var(--accent) 12%, transparent);
+    padding: 9px 18px; border-radius: 999px; }
+  h1 { font-size: clamp(44px, 8vw, 92px); font-weight: 900; line-height: 1.05; letter-spacing: -.02em; margin: 26px 0 22px; }
+  h1 .hl { position: relative; white-space: nowrap; }
+  h1 .hl::after { content:""; position:absolute; left:-4px; right:-4px; bottom:8px; height:22px; z-index:-1; border-radius:5px;
+    background: var(--accent); transform: rotate(-1deg); box-shadow: 0 10px 40px color-mix(in srgb, var(--accent) 55%, transparent); }
+  .sub { font-size: clamp(17px, 2.4vw, 21px); color: var(--mut); max-width: 680px; }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; align-items: center; }
+  .btn { font-weight: 700; padding: 16px 30px; border-radius: 14px; transition: transform .15s, box-shadow .15s; cursor: pointer; }
+  .btn-primary { background: var(--accent); color: #0a0b11; box-shadow: 0 12px 36px color-mix(in srgb, var(--accent) 42%, transparent); }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-ghost { border: 1px solid var(--line); color: var(--tx); background: rgba(255,255,255,.03); }
+  .btn-ghost:hover { border-color: var(--accent); }
+  .trust { display: flex; flex-wrap: wrap; gap: 22px; margin-top: 30px; color: var(--faint); font-size: 14px; }
+  .trust b { color: var(--tx); }
+
+  /* 区块标题 */
+  section { padding: 64px 0; }
+  .eyebrow { font-size: 14px; font-weight: 700; letter-spacing: .26em; color: var(--accent); text-transform: uppercase; }
+  h2 { font-size: clamp(30px, 5vw, 46px); font-weight: 900; letter-spacing: -.01em; margin: 12px 0 8px; }
+  .lead { color: var(--mut); max-width: 620px; }
+
+  /* 功能卡 */
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 40px; }
+  .card { padding: 26px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line); position: relative; overflow: hidden;
+    transition: transform .18s, border-color .18s; }
+  .card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--ca) 60%, var(--line)); }
+  .card .ic { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px;
+    background: color-mix(in srgb, var(--ca) 16%, transparent); margin-bottom: 16px; }
+  .card h3 { font-size: 21px; margin-bottom: 8px; }
+  .card p { color: var(--mut); font-size: 15px; }
+  .card .tag { position: absolute; top: 22px; right: 22px; font-family: "Unbounded"; font-size: 11px; letter-spacing: .1em; color: var(--ca); }
+  .card::before { content:""; position:absolute; inset:0 0 auto 0; height:3px; background: var(--ca); opacity:.8; }
+
+  /* 安装步骤 */
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 40px; }
+  .step { padding: 24px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); }
+  .step .n { font-family: "Unbounded"; font-weight: 800; font-size: 34px; color: var(--accent); opacity: .85; }
+  .step strong { display: block; margin: 10px 0 6px; }
+  .step p { color: var(--mut); font-size: 14px; }
+  .step code { background: rgba(255,255,255,.07); padding: 2px 7px; border-radius: 5px; font-size: 13px; }
+
+  /* 价格 */
+  .price-card { max-width: 560px; margin: 40px auto 0; padding: 44px; border-radius: 24px; text-align: center; position: relative;
+    background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 16%, var(--panel)), var(--panel));
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line)); box-shadow: 0 30px 80px rgba(0,0,0,.4); }
+  .price-card .badge { position: absolute; top: 20px; right: 20px; font-size: 12px; font-weight: 700; color: #0a0b11; background: var(--accent); padding: 6px 14px; border-radius: 999px; }
+  .price-card .amt { font-size: 76px; font-weight: 900; line-height: 1; margin: 14px 0 4px; }
+  .price-card .amt small { font-size: 26px; font-weight: 700; }
+  .price-card .once { color: var(--accent); font-weight: 700; }
+  .price-list { list-style: none; text-align: left; max-width: 360px; margin: 26px auto; display: flex; flex-direction: column; gap: 12px; }
+  .price-list li { color: var(--mut); }
+  .price-list li b { color: var(--tx); }
+  .price-list li::before { content: "✓"; color: var(--accent); font-weight: 800; margin-right: 12px; }
+
+  /* FAQ */
+  .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 36px; margin-top: 36px; }
+  .faq .q { font-weight: 700; margin-bottom: 4px; }
+  .faq .a { color: var(--mut); font-size: 15px; }
+
+  footer { padding: 50px 0; border-top: 1px solid var(--line); color: var(--faint); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; align-items: center; }
+
+  @media (max-width: 880px) {
+    .grid, .steps, .faq { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .grid, .steps, .faq { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="bg-grid"></div>
+
+<nav><div class="wrap">
+  <div class="brand"><span class="logo"><span></span><span></span><span></span><span></span></span> Homepage <span class="mono" style="font-weight:600;font-size:14px;color:var(--mut)">MODULES</span></div>
+  <a class="nav-cta" href="#install">立即安装</a>
+</div></nav>
+
+<header><div class="wrap">
+  <span class="pill"><span>●</span> 30 模块 · 一个插件 · 双端</span>
+  <h1>把 Obsidian 主页<br/>变成<span class="hl">效率中枢</span></h1>
+  <p class="sub">番茄专注、待办看板、FSRS 背单词、习惯打卡、AI 助手、记账……每个模块只要<b style="color:var(--tx)">一个代码块</b>就能丢进任意笔记。数据全本地、不上传，主页拖拽编排、主题自适应。</p>
+  <div class="cta-row">
+    <a class="btn btn-primary" href="#install">7 天免费试用 →</a>
+    <a class="btn btn-ghost" href="https://github.com/lv-g-eng/obsidian-homepage-modules" target="_blank">查看源码 / GitHub</a>
+  </div>
+  <div class="trust">
+    <span><b>59 元</b> 一次买断 · 永久使用（非订阅）</span>
+    <span><b>全本地</b> 数据不上传</span>
+    <span><b>桌面 + 移动</b> 双端可用</span>
+  </div>
+</div></header>
+
+<section id="features"><div class="wrap">
+  <div class="eyebrow">Features</div>
+  <h2>六大高频场景，开箱即用</h2>
+  <p class="lead">不是又一个需要折腾 Dataview 的复杂插件——零配置，写个代码块就能用。</p>
+  <div class="grid">
+    <div class="card" style="--ca:#fb7185"><span class="tag">POMODORO</span><div class="ic">🍅</div><h3>番茄专注</h3><p>环形进度盘 + 状态栏倒计时，关掉 Obsidian 也不丢进度，完成自动种进全年热力图。</p></div>
+    <div class="card" style="--ca:#7c6cff"><span class="tag">TODO</span><div class="ic">✅</div><h3>待办看板</h3><p>项目→任务→子任务三层，优先级彩标 + 截止提醒，一键派单到今日。</p></div>
+    <div class="card" style="--ca:#34d399"><span class="tag">VOCAB</span><div class="ic">📖</div><h3>FSRS 背单词</h3><p>Anki 同款算法，内置四六级/雅思 1.4 万词，按等级看进度/正确率，错词本自动归集。</p></div>
+    <div class="card" style="--ca:#2dd4bf"><span class="tag">HABIT</span><div class="ic">🎯</div><h3>习惯打卡</h3><p>要做/限额/戒断三类，连续天数 streak + 本周视图 + 全年热力图 + 每日提醒。</p></div>
+    <div class="card" style="--ca:#38bdf8"><span class="tag">AI</span><div class="ic">🤖</div><h3>AI 助手</h3><p>支持 DeepSeek / 通义千问 / Kimi，选中即翻译润色，摘要一键派单到待办。</p></div>
+    <div class="card" style="--ca:#fbbf24"><span class="tag">LEDGER</span><div class="ic">💰</div><h3>记账理财</h3><p>记账 + 分类汇总 + 预算超支预警 + 攒钱目标 + 订阅到期提醒，钱去哪一目了然。</p></div>
+  </div>
+  <p class="lead" style="margin-top:28px">还有日历、天气、时间块、记忆卡片、读书清单、心情、喝水、睡眠、每日一言…… <b style="color:var(--tx)">共 30 个模块</b>。</p>
+</div></section>
+
+<section id="install"><div class="wrap">
+  <div class="eyebrow">Install</div>
+  <h2>30 秒，用 BRAT 装上</h2>
+  <p class="lead">暂未上架社区市场，通过 BRAT 安装即可自动跟随更新。</p>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><strong>安装 BRAT</strong><p>社区插件市场搜索 <code>BRAT</code> 并启用。</p></div>
+    <div class="step"><div class="n">2</div><strong>Add Beta Plugin</strong><p>命令面板运行 <code>BRAT: Add a beta plugin</code>。</p></div>
+    <div class="step"><div class="n">3</div><strong>填仓库地址</strong><p><code>lv-g-eng/obsidian-homepage-modules</code></p></div>
+    <div class="step"><div class="n">4</div><strong>启用即用</strong><p>写个 <code>pomodoro</code> 代码块，或运行「生成工具箱主页」。</p></div>
+  </div>
+</div></section>
+
+<section id="price"><div class="wrap">
+  <div class="eyebrow" style="text-align:center">Pricing</div>
+  <h2 style="text-align:center">一次买断，永久使用</h2>
+  <div class="price-card">
+    <span class="badge">早鸟价</span>
+    <div class="once">永久买断 · 非订阅</div>
+    <div class="amt"><small>¥</small>59</div>
+    <div style="color:var(--mut)">先 7 天全功能免费试用，喜欢再买</div>
+    <ul class="price-list">
+      <li>解锁全部 <b>30 个模块</b></li>
+      <li><b>3 台设备</b>绑定，桌面 + 移动</li>
+      <li>后续更新 <b>免费</b></li>
+      <li>数据 <b>全本地</b>，AI 自备 key 不经手</li>
+    </ul>
+    <a class="btn btn-primary" href="#" style="display:inline-block">开始 7 天试用</a>
+    <div style="margin-top:14px;color:var(--faint);font-size:13px">购买 / 咨询请联系作者（小红书私信或 GitHub Issues）</div>
+  </div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <div class="eyebrow">FAQ</div>
+  <h2>常见问题</h2>
+  <div class="faq">
+    <div><div class="q">手机能用吗？</div><div class="a">能。桌面 + 移动双端，AI 在移动端走 requestUrl 不被跨域拦。</div></div>
+    <div><div class="q">数据安全吗？要联网吗？</div><div class="a">数据全部存在你自己的库里，完全本地、不上传。只有 AI 模块在你主动调用时联自己配的服务商。</div></div>
+    <div><div class="q">一个 key 几台设备？</div><div class="a">3 台设备绑定，换设备可释放槽位。买断后后续更新免费。</div></div>
+    <div><div class="q">和 Dataview 比？</div><div class="a">不用写查询、不用折腾配置——一个代码块即用，零门槛。</div></div>
+    <div><div class="q">背单词词库要自己导吗？</div><div class="a">内置四六级/雅思 1.4 万词，首次使用自动下载缓存，点一下导入对应等级即可。</div></div>
+    <div><div class="q">试用到期会丢数据吗？</div><div class="a">不会。数据是你的笔记文件，永远在；到期只是锁专业版模块，免费模块照常用。</div></div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span>Homepage Modules · Obsidian 模块化主页</span>
+  <span><a href="https://github.com/lv-g-eng/obsidian-homepage-modules" target="_blank" class="accent">GitHub</a> · 数据全本地 · 7 天免费试用 · 59 买断永久</span>
+</div></footer>
+</body>
+</html>

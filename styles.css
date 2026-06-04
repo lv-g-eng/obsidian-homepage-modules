@@ -593,3 +593,51 @@
 
 /* 空状态统一弱化 */
 .hm-card-body > .hm-muted:only-child { padding: 8px 0; }
+
+/* ============ 上手引导弹窗（首次启动 / 命令重看） ============ */
+.hm-onboard-modal { max-width: 520px; }
+.hm-onboard-modal .modal-content { padding: 0; }
+.hm-onboard-hero {
+  display: flex; align-items: center; gap: 16px;
+  padding: 22px 24px;
+  border-radius: 12px 12px 0 0;
+  background:
+    radial-gradient(420px 200px at 88% -40%, color-mix(in srgb, var(--interactive-accent) 45%, transparent), transparent 70%),
+    linear-gradient(135deg, color-mix(in srgb, var(--interactive-accent) 22%, var(--background-secondary)), var(--background-secondary));
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+.hm-onboard-logo {
+  flex: none; width: 52px; height: 52px; border-radius: 14px; position: relative;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 9px;
+  background: linear-gradient(135deg, var(--interactive-accent), color-mix(in srgb, var(--interactive-accent) 60%, #fff 12%));
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--interactive-accent) 40%, transparent);
+}
+.hm-onboard-logo span { border-radius: 5px; background: color-mix(in srgb, var(--background-primary) 88%, transparent); }
+.hm-onboard-logo span:last-child { background: color-mix(in srgb, var(--background-primary) 45%, transparent); }
+.hm-onboard-hero-text h2 { margin: 0 0 4px; font-size: 1.25em; line-height: 1.2; }
+.hm-onboard-hero-text p { margin: 0; color: var(--text-muted); font-size: var(--font-ui-small); }
+
+.hm-onboard-steps { display: flex; flex-direction: column; gap: 14px; padding: 22px 24px 6px; }
+.hm-onboard-step { display: flex; gap: 14px; align-items: flex-start; }
+.hm-onboard-badge {
+  flex: none; position: relative; width: 38px; height: 38px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--interactive-accent) 12%, transparent);
+  color: var(--interactive-accent);
+}
+.hm-onboard-badge .svg-icon { width: 20px; height: 20px; }
+.hm-onboard-num {
+  position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--interactive-accent); color: var(--text-on-accent);
+  font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+.hm-onboard-step-text strong { display: block; margin-bottom: 2px; }
+.hm-onboard-step-body { color: var(--text-muted); font-size: var(--font-ui-small); line-height: 1.5; }
+.hm-onboard-step-body code {
+  background: var(--background-modifier-border); border-radius: 4px; padding: 1px 5px; font-size: 0.92em;
+}
+
+.hm-onboard-foot { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 24px 8px; }
+.hm-onboard-cta { font-weight: 600; }
+.hm-onboard-later { margin-left: auto; }
+.hm-onboard-hint { padding: 6px 24px 22px; color: var(--text-faint); font-size: var(--font-ui-smaller); }

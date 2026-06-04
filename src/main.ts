@@ -13,6 +13,7 @@ import { registerAICommands } from "./ai/ai-commands";
 import { HomepageView, HOMEPAGE_VIEW_TYPE } from "./ui/homepage/homepage-view";
 import { renderHomepageGrid } from "./ui/homepage/grid-engine";
 import { generateToolkitHomepage } from "./ui/homepage/toolkit-generator";
+import { OnboardingModal } from "./ui/onboarding";
 import { MODULES } from "./modules";
 
 export default class HomepageModulesPlugin extends Plugin {
@@ -109,6 +110,28 @@ export default class HomepageModulesPlugin extends Plugin {
     this.addSettingTab(
       new HMSettingTab(this.app, this, this.settings, this.license, this.registry, this.ai)
     );
+
+    // 11. 上手引导：命令面板可随时重看；首次安装在布局就绪后自动弹一次
+    this.addCommand({
+      id: "show-onboarding",
+      name: "上手引导",
+      callback: () => this.openOnboarding(),
+    });
+    if (!this.settings.data.onboardedAt) {
+      this.app.workspace.onLayoutReady?.(() => this.openOnboarding());
+    }
+  }
+
+  private openOnboarding(): void {
+    new OnboardingModal(this.app, {
+      onGenerate: () =>
+        generateToolkitHomepage(this.app, this.ctx, this.registry, this.settings),
+      onOpenPanel: () => void this.activatePanel(),
+      onDismiss: () => {
+        this.settings.data.onboardedAt = Date.now();
+        void this.settings.save();
+      },
+    }).open();
   }
 
   async onunload(): Promise<void> {

@@ -26,3 +26,7 @@ ecdict.csv
 # os / editor
 .DS_Store
 *.log
+
+# cover/landing render scratch (sources: promo/*.html, outputs: assets/cover-*.png)
+covers-all.png
+landing-preview.png

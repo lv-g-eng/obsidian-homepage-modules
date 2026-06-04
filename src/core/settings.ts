@@ -46,6 +46,8 @@ export interface PluginData {
   moduleEnabled: Record<string, boolean>;
   /** 各模块的小型全局状态（如番茄运行态），区别于大体量集合数据 */
   moduleState: Record<string, unknown>;
+  /** 首次上手引导完成的时间戳；未定义表示从未显示过引导 */
+  onboardedAt?: number;
 }
 
 export const DEFAULT_DATA: PluginData = {

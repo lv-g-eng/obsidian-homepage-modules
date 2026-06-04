@@ -1,7 +1,7 @@
 {
   "name": "homepage-modules",
-  "version": "2.4.0",
-  "description": "一个插件塞进 28 个模块：待办看板、番茄专注、习惯打卡、FSRS 背单词、AI 助手……每个模块一个代码块即用，数据全本地，主页拖拽编排。",
+  "version": "2.4.1",
+  "description": "一个插件塞进 30 个模块：待办看板、番茄专注、习惯打卡、FSRS 背单词、AI 助手……每个模块一个代码块即用，数据全本地，主页拖拽编排。",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",

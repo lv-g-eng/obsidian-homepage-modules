@@ -1,5 +1,5 @@
 // 用桩 obsidian 加载打包后的 main.js，验证无顶层执行错误、插件类可实例化、
-// 28 个代码块处理器都成功注册。仅冒烟，不替代 Obsidian 内真机测试。
+// 全部代码块处理器（30 模块 + homepage = 31）都成功注册。仅冒烟，不替代 Obsidian 内真机测试。
 const Module = require("module");
 
 class Events {

@@ -1,11 +1,10 @@
 {
   "id": "homepage-modules",
   "name": "Homepage Modules",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "minAppVersion": "1.5.0",
-  "description": "模块化主页 2.0：30 个模块。背单词内置四级/六级/雅思完整词库≈1.4万词+按等级进度/正确率；待办优先级/截止；番茄环形钟；AI 助手支持 DeepSeek/Qwen 等+翻译/润色右键命令；今日概览。一个代码块即用，数据全本地。",
-  "author": "",
-  "authorUrl": "",
-  "fundingUrl": "",
+  "description": "Turn your home note into a control center: to-do boards, a Pomodoro timer with focus heatmap, habit tracking, FSRS vocabulary review with built-in word lists, an AI assistant, calendar and ledger, each as a single code block with all data stored locally.",
+  "author": "lv-g-eng",
+  "authorUrl": "https://github.com/lv-g-eng",
   "isDesktopOnly": false
 }
